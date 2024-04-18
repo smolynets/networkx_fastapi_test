@@ -1,12 +1,12 @@
 import networkx as nx
-from dependencies import GraphManager
+from app.dependencies import GraphManager
 import json
-from crud import create_graph_query, get_graph_query, update_graph_query
-from models import Graph
+from app.crud import create_graph_query, get_graph_query, update_graph_query
+from app.models import Graph
 from fastapi import FastAPI, Depends, HTTPException, APIRouter
-from database import get_db
+from app.database import get_db
 from sqlalchemy.orm.session import Session
-from schema import Edge, Node
+from app.schema import Edge, Node
 
 
 router = APIRouter()

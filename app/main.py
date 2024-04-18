@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException
 import os
 from fastapi_sqlalchemy import DBSessionMiddleware
 from fastapi_sqlalchemy import db
-from routes import router
+from app.routes import router
 
 app = FastAPI()
 

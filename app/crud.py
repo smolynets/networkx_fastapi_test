@@ -3,7 +3,7 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.orm.session import Session
 
-from models import Graph
+from app.models import Graph
 
 
 def create_graph_query(session: Session, node_data: dict):
