@@ -30,7 +30,9 @@ def add_node(graph_id: int, node_type: str, node_id: str, session:Session=Depend
     if not graph_record:
         raise HTTPException(status_code=404, detail="Graph not found")
     graph = graph_manager.deserialize_graph(graph_record.node_data)
-    graph_manager.add_start_node(graph, node_type, node_id)
+    saved_node = graph_manager.add_node(graph, node_type, node_id)
+    if not saved_node:
+        raise HTTPException(status_code=404, detail="Node type should be start_node, condition, end_node or message")
     graph_data = graph_manager.serialize_graph(graph)
     update_graph_query(session, graph_record.id, graph_data)
     return {"message": graph_data}
@@ -52,7 +54,9 @@ def create_edge(graph_id: int, edge: Edge, session:Session=Depends(get_db)):
     if not graph_record:
         raise HTTPException(status_code=404, detail="Graph not found")
     graph = graph_manager.deserialize_graph(graph_record.node_data)
-    graph.add_edge(edge.source, edge.target)
+    is_edge_saved, result = graph_manager.add_edge(graph, edge.source, edge.target)
+    if not is_edge_saved:
+        raise HTTPException(status_code=404, detail=result)
     graph_data = graph_manager.serialize_graph(graph)
     node = session.query(Graph).filter(Graph.id == graph_id).first()
     node.node_data = graph_data

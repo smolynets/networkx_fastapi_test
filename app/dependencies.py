@@ -5,20 +5,32 @@ class GraphManager:
     def __init__(self):
         self.graph = nx.DiGraph()
 
-    def add_start_node(self, graph, node_type, node_id):
-        graph.add_node(node_id, node_type=node_type)
+    def add_node(self, graph, node_type, node_id):
+        if node_type in ["start_node", "condition", "end_node"]:
+            graph.add_node(node_id, node_type=node_type)
+            return True
+        elif node_type == "message":
+            graph.add_node(node_id, node_type='message', status=status, message=message)
+            return True
+        else:
+            return False
 
-    def add_message_node(self, node_id, status, message):
-        self.graph.add_node(node_id, node_type='Message', status=status, message=message)
-
-    def add_condition_node(self, node_id):
-        self.graph.add_node(node_id, node_type='Condition')
-
-    def add_end_node(self, node_id):
-        self.graph.add_node(node_id, node_type='End')
-
-    def add_edge(self, source_node, target_node):
-        self.graph.add_edge(source_node, target_node)
+    def add_edge(self, graph, source_node, target_node):
+        if source_node and graph.nodes[source_node]["node_type"] == "start_node":
+            return False, "Edge not saved - start_node can has end edge only"
+        if target_node and graph.nodes[target_node]["node_type"] == "end_node":
+            return False, "Edge not saved - target_node can has start edge only"
+        if source_node and target_node:
+            graph.add_edge(source_node, target_node)
+            return True, "Source and target nodes saved"
+        else:
+            if source_node:
+                graph.add_edge(source_node, source_node)
+                return True, "Source node saved"
+            if target_node:
+                graph.add_edge(target_node, target_node)
+                return True, "Target_node node saved"
+        return False, "Edge not saved - need source or target node"
 
     def remove_node(self, node_id):
         self.graph.remove_node(node_id)
